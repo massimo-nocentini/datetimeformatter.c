@@ -312,69 +312,75 @@ int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
     return 0;
 }
 
-int calendar_get(lua_State *L, tm_t tm, int field)
+int calendar_get(lua_State *L, tm_t tm, int field, int *v, char *output)
 {
-    int v = -1;
+    *v = -1;
     struct tm *info = tm.tm;
 
     switch (field)
     {
     case ERA:
-        v = info->tm_year + 1900 >= 0 ? 1 : 0;
+        *v = info->tm_year + 1900 >= 0 ? 1 : 0;
         break;
     case YEAR:
-        v = info->tm_year + 1900;
+        *v = info->tm_year + 1900;
         break;
     case MONTH:
-        v = info->tm_mon;
+        *v = info->tm_mon;
         break;
     case DATE:
-        v = info->tm_mday;
+        *v = info->tm_mday;
         break;
     case HOUR_OF_DAY:
-        v = info->tm_hour;
+        *v = info->tm_hour;
         break;
     case MINUTE:
-        v = info->tm_min;
+        *v = info->tm_min;
         break;
     case SECOND:
-        v = info->tm_sec;
+        *v = info->tm_sec;
         break;
     case MILLISECOND:
-        luaL_error(L, "MILLISECOND calendar field isn't supported.");
+        sprintf(output, "MILLISECOND calendar field isn't supported.");
+        return 1;
     case DAY_OF_WEEK:
-        v = info->tm_wday;
+        *v = info->tm_wday;
         break;
     case DAY_OF_YEAR:
-        v = info->tm_yday + 1;
+        *v = info->tm_yday + 1;
         break;
     case DAY_OF_WEEK_IN_MONTH:
-        luaL_error(L, "DAY_OF_WEEK_IN_MONTH calendar field isn't supported.");
+        sprintf(output, "DAY_OF_WEEK_IN_MONTH calendar field isn't supported.");
+        return 1;
     case WEEK_OF_YEAR:
-        luaL_error(L, "WEEK_OF_YEAR calendar field isn't supported.");
+        sprintf(output, "WEEK_OF_YEAR calendar field isn't supported.");
+        return 1;
     case WEEK_OF_MONTH:
-        luaL_error(L, "WEEK_OF_MONTH calendar field isn't supported.");
+        sprintf(output, "WEEK_OF_MONTH calendar field isn't supported.");
+        return 1;
     case AM_PM:
-        v = info->tm_hour < 12 ? 0 : 1;
+        *v = info->tm_hour < 12 ? 0 : 1;
         break;
     case HOUR:
-        v = info->tm_hour % 12;
+        *v = info->tm_hour % 12;
         break;
     case ZONE_OFFSET:
-        v = tm.zone_offset;
+        *v = tm.zone_offset;
         break;
     case WEEK_YEAR:
-        luaL_error(L, "WEEK_YEAR calendar field isn't supported.");
+        sprintf(output, "WEEK_YEAR calendar field isn't supported.");
+        return 1;
     case ISO_DAY_OF_WEEK:
-        v = info->tm_wday + 1;
+        *v = info->tm_wday + 1;
         break;
     case DST_OFFSET:
-        v = info->tm_isdst;
+        *v = info->tm_isdst;
         break;
     default:
-        luaL_error(L, "Generic calendar field %d isn't supported.", field);
+        sprintf(output, "Generic calendar field %d isn't supported.", field);
+        return 1;
     }
-    return v;
+    return 0;
 }
 
 // void calendar_getfield_at(lua_State *L, int date_table_index, const char *field, int value, char **current)
@@ -532,7 +538,7 @@ void zeroPaddingNumber(lua_State *L, int value, int minDigits, int maxDigits, lu
     luaL_addvalue(buffer);
 }
 
-void subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffer *buffer)
+int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffer *buffer, char *output)
 {
     struct tm *info = tm.tm;
     // int lua_type;
@@ -544,6 +550,8 @@ void subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buff
 
     int field = PATTERN_INDEX_TO_CALENDAR_FIELD[patternCharIndex];
     int value;
+    int failed = 0;
+
     if (field == WEEK_YEAR)
     {
         // if (calendar.isWeekDateSupported())
@@ -561,17 +569,25 @@ void subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buff
             // use calendar year 'y' instead
             patternCharIndex = PATTERN_YEAR;
             field = PATTERN_INDEX_TO_CALENDAR_FIELD[patternCharIndex];
-            value = calendar_get(L, tm, field);
+            failed = calendar_get(L, tm, field, &value, output);
+            if (failed)
+                return failed;
         }
         // lua_pop(L, 1);
     }
     else if (field == ISO_DAY_OF_WEEK)
     {
-        value = toISODayOfWeek(calendar_get(L, tm, DAY_OF_WEEK));
+        failed = calendar_get(L, tm, DAY_OF_WEEK, &value, output);
+        if (failed)
+            return failed;
+
+        value = toISODayOfWeek(value);
     }
     else
     {
-        value = calendar_get(L, tm, field);
+        failed = calendar_get(L, tm, field, &value, output);
+        if (failed)
+            return failed;
     }
 
     // int style = (count >= 4) ? LONG : SHORT;
@@ -833,7 +849,16 @@ void subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buff
         break;
 
     case PATTERN_ISO_ZONE: // 'X'
-        value = calendar_get(L, tm, ZONE_OFFSET) + calendar_get(L, tm, DST_OFFSET);
+        int zone_o, dst_o;
+        failed = calendar_get(L, tm, ZONE_OFFSET, &zone_o, output);
+        if (failed)
+            return failed;
+
+        failed = calendar_get(L, tm, DST_OFFSET, &dst_o, output);
+        if (failed)
+            return failed;
+
+        value = zone_o + dst_o;
 
         if (value == 0)
         {
@@ -893,13 +918,16 @@ void subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buff
     // field_t f = PATTERN_INDEX_TO_DATE_FORMAT_FIELD_ID[patternCharIndex];
 
     // formatted(fieldID, f, f, beginOffset, luaL_bufflen(buffer), buffer);
+    return failed;
 }
 
-int dtf_format(buffer_t *compiledPattern, time_t timer, const char *locale, int offset, const char *timezone, int local, char **output)
+int dtf_format(buffer_t *compiledPattern, time_t timer, const char *locale, int offset, const char *timezone, int local, char *output)
 {
+    int failed = 0;
+
     if (setlocale(LC_TIME, locale) == NULL)
     {
-        sprintf(*output, "Impossible to set the \"%s\" locale.", locale);
+        sprintf(output, "Impossible to set the \"%s\" locale.", locale);
         return 1;
     }
 
@@ -950,14 +978,17 @@ int dtf_format(buffer_t *compiledPattern, time_t timer, const char *locale, int 
             break;
 
         default:
-            subFormat(L, tm, tag, count, &toAppendTo);
-            break;
+            failed = subFormat(L, tm, tag, count, &toAppendTo, output);
+            if (failed)
+                return failed;
+            else
+                break;
         }
     }
 
     luaL_pushresult(&toAppendTo);
-    *output = lua_tostring(L, -1);
+    strcpy(output, lua_tostring(L, -1));
     lua_close(L);
 
-    return 0;
+    return failed;
 }

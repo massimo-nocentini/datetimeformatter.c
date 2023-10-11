@@ -726,4 +726,4 @@ void add_char(buffer_t *, char_t);
 void add_buffer(buffer_t *, buffer_t *);
 
 int dtf_compile(const char *, buffer_t **, char *);
-int dtf_format(buffer_t *, time_t, const char *, int, const char *, int, char **);
+int dtf_format(buffer_t *, time_t, const char *, int, const char *, int, char *);
