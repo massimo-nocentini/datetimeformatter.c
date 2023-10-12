@@ -461,8 +461,8 @@ typedef enum Calendar
      * @see #LONG_FORMAT
      * @see #SHORT_STANDALONE
      * @see #LONG_STANDALONE
-     * @see #SHORT
-     * @see #LONG
+     * @see #SHORT_C
+     * @see #LONG_C
      * @since 1.6
      */
     ALL_STYLES = 0,
@@ -475,10 +475,10 @@ typedef enum Calendar
      * getDisplayNames} equivalent to {@link #SHORT_FORMAT}.
      *
      * @see #SHORT_STANDALONE
-     * @see #LONG
+     * @see #LONG_C
      * @since 1.6
      */
-    SHORT = 1,
+    SHORT_C = 1,
 
     /**
      * A style specifier for {@link #getDisplayName(int, int, Locale)
@@ -486,10 +486,10 @@ typedef enum Calendar
      * getDisplayNames} equivalent to {@link #LONG_FORMAT}.
      *
      * @see #LONG_STANDALONE
-     * @see #SHORT
+     * @see #SHORT_C
      * @since 1.6
      */
-    LONG = 2,
+    LONG_C = 2,
 
     /**
      * A style specifier for {@link #getDisplayName(int, int, Locale)
@@ -552,7 +552,7 @@ typedef enum Calendar
      * @see #LONG_STANDALONE
      * @since 1.8
      */
-    // SHORT_STANDALONE = SHORT | STANDALONE_MASK,
+    // SHORT_STANDALONE = SHORT_C | STANDALONE_MASK,
 
     /**
      * A style specifier for {@link #getDisplayName(int, int, Locale)
@@ -565,7 +565,7 @@ typedef enum Calendar
      * @see #SHORT_STANDALONE
      * @since 1.8
      */
-    // LONG_STANDALONE = LONG | STANDALONE_MASK,
+    // LONG_STANDALONE = LONG_C | STANDALONE_MASK,
 } calendar_t;
 
 typedef enum SignStyle

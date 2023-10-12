@@ -590,7 +590,7 @@ int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffe
             return failed;
     }
 
-    // int style = (count >= 4) ? LONG : SHORT;
+    // int style = (count >= 4) ? LONG_C : SHORT_C;
     // if (!useDateFormatSymbols && field < ZONE_OFFSET && patternCharIndex != PATTERN_MONTH_STANDALONE)
     // {
     //     current = calendar.getDisplayName(field, style, locale);
@@ -633,7 +633,7 @@ int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffe
         // {
         //     if (current == NULL)
         //     {
-        //         zeroPaddingNumber(L, value, style == LONG ? 1 : count, maxIntCount, buffer);
+        //         zeroPaddingNumber(L, value, style == LONG_C ? 1 : count, maxIntCount, buffer);
         //     }
         // }
         // lua_pop(L, 1);
@@ -800,7 +800,7 @@ int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffe
             // else
             {
                 // TimeZone tz = calendar.getTimeZone();
-                // int tzstyle = (count < 4 ? TimeZone.SHORT : TimeZone.LONG);
+                // int tzstyle = (count < 4 ? TimeZone.SHORT_C : TimeZone.LONG_C);
                 // buffer.append(tz.getDisplayName(daylight, tzstyle, formatData.locale));
                 // bool daylight = (calendar_get(L, date_table_index, DST_OFFSET) != 0);
 
