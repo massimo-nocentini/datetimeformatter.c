@@ -1,12 +1,12 @@
 
 linux:
-	cc -O2 -std=gnu11 -fPIC -Wall -shared -o libdatetimeformatter.so datetimeformatter.c -llua
+	gcc -O3 -g -fPIC -Wall -shared -o libdatetimeformatter.so datetimeformatter.c -llua
 
 macos:
-	cc -O2 -std=c11 -fPIC -Wall -dynamiclib -o libdatetimeformatter.dylib datetimeformatter.c -llua
+	gcc -O3 -g -fPIC -Wall -dynamiclib -o libdatetimeformatter.dylib datetimeformatter.c -llua
 
 mingw:
-	cc -O2 -std=gnu11 -fPIC -Wall -shared -o libdatetimeformatter.dll datetimeformatter.c -I/usr/local/include/ -L/usr/local/lib -llua54
+	gcc -O3 -g -fPIC -Wall -shared -o libdatetimeformatter.dll datetimeformatter.c -I/usr/local/include/ -L/usr/local/lib -llua54
 
 install:
 	mkdir -p /usr/local/lib	# just for ensuring that the dest dir exists
