@@ -552,6 +552,8 @@ int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffe
     int value;
     int failed = 0;
 
+    int zone_o, dst_o;
+
     if (field == WEEK_YEAR)
     {
         // if (calendar.isWeekDateSupported())
@@ -849,7 +851,7 @@ int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffe
         break;
 
     case PATTERN_ISO_ZONE: // 'X'
-        int zone_o, dst_o;
+
         failed = calendar_get(L, tm, ZONE_OFFSET, &zone_o, output);
         if (failed)
             return failed;
@@ -924,6 +926,7 @@ int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffe
 int dtf_format(buffer_t *compiledPattern, time_t timer, const char *locale, int offset, const char *timezone, int local, char *output)
 {
     int failed = 0;
+    char_t *shifted;
 
     if (setlocale(LC_TIME, locale) == NULL)
     {
@@ -969,7 +972,7 @@ int dtf_format(buffer_t *compiledPattern, time_t timer, const char *locale, int 
 
         case TAG_QUOTE_CHARS:
             // luaL_addlstring(&toAppendTo, (char *)(compiledPattern->buffer + i), count);
-            char_t *shifted = compiledPattern->buffer + i;
+            shifted = compiledPattern->buffer + i;
             for (int j = 0; j < count; j++)
             {
                 luaL_addchar(&toAppendTo, (char)shifted[j]);
