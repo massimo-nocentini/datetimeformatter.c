@@ -17,11 +17,11 @@ install:
 install-macos:
 	mkdir -p /usr/local/lib	# just for ensuring that the dest dir exists
 	mkdir -p /usr/local/include	# just for ensuring that the dest dir exists
-	mv libdatetimeformatter.dylib /usr/local/lib/lua/5.4/
+	mv libdatetimeformatter.dylib /usr/local/lib/
 	cp datetimeformatter.h /usr/local/include
 
 install-mingw:
 	mkdir -p /usr/local/lib	# just for ensuring that the dest dir exists
 	mkdir -p /usr/local/include	# just for ensuring that the dest dir exists
-	mv libdatetimeformatter.dll /usr/local/lib/lua/5.4/
+	mv libdatetimeformatter.dll /usr/local/lib/
 	cp datetimeformatter.h /usr/local/include
