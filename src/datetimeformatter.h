@@ -9,6 +9,22 @@
 #include <math.h>
 #include <locale.h>
 
+#ifdef _WIN32
+	#define EXPORT __declspec(dllexport)
+#else
+	#define EXPORT __attribute__((visibility("default")))
+#endif
+
+#ifdef _WIN32
+	#if defined __LP64__ || defined _WIN64
+		#define CallingConvention __attribute__((ms_abi))
+	#else
+		#define CallingConvention __stdcall
+	#endif
+#else
+	#define CallingConvention
+#endif
+
 #define STRFTIME_BUFFER_LENGTH 128
 
 #define Long_MAX_VALUE 0x7fffffffffffffffL
@@ -720,10 +736,10 @@ typedef enum DateFormat
     TIMEZONE_FIELD = 17,
 } dateformat_t;
 
-buffer_t *new_buffer(size_t);
-void free_buffer(buffer_t *);
-void add_char(buffer_t *, char_t);
-void add_buffer(buffer_t *, buffer_t *);
+EXPORT buffer_t CallingConvention *new_buffer(size_t);
+EXPORT void CallingConvention free_buffer(buffer_t *);
+EXPORT void CallingConvention add_char(buffer_t *, char_t);
+EXPORT void CallingConvention add_buffer(buffer_t *, buffer_t *);
 
-int dtf_compile(const char *, buffer_t **, char *);
-int dtf_format(buffer_t *, time_t, const char *, int, const char *, int, char *);
+EXPORT int CallingConvention dtf_compile(const char *, buffer_t **, char *);
+EXPORT int CallingConvention dtf_format(buffer_t *, time_t, const char *, int, const char *, int, char *);
