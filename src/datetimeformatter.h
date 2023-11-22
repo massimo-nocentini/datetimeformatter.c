@@ -94,7 +94,7 @@ typedef enum Calendar
     // algorithm for resolving which fields to pay attention to is described
     // in the class documentation.
 
-    //   local fields (YEAR, MONTH, DATE, HOUR, MINUTE, etc.)
+    //   local fields (YEAR, MONTH, df_DATE, HOUR, MINUTE, etc.)
     //           |
     //           | Using Calendar-specific algorithm
     //           V
@@ -116,7 +116,7 @@ typedef enum Calendar
     //           |
     //           | Using Calendar-specific algorithm
     //           V
-    //   local fields (YEAR, MONTH, DATE, HOUR, MINUTE, etc.)
+    //   local fields (YEAR, MONTH, df_DATE, HOUR, MINUTE, etc.)
 
     // In general, a round trip from fields, through local and UTC millis, and
     // back out to fields is made when necessary.  This is implemented by the
@@ -197,14 +197,14 @@ typedef enum Calendar
      *
      * @see #DAY_OF_MONTH
      */
-    DATE = 5,
+    df_DATE = 5,
 
     /**
      * Field number for {@code get} and {@code set} indicating the
-     * day of the month. This is a synonym for {@code DATE}.
+     * day of the month. This is a synonym for {@code df_DATE}.
      * The first day of the month has value 1.
      *
-     * @see #DATE
+     * @see #df_DATE
      */
     DAY_OF_MONTH = 5,
 
@@ -652,7 +652,7 @@ typedef enum DateFormat
      */
     MONTH_FIELD = 2,
     /**
-     * Useful constant for DATE field alignment.
+     * Useful constant for df_DATE field alignment.
      * Used in FieldPosition of date/time formatting.
      */
     DATE_FIELD = 3,

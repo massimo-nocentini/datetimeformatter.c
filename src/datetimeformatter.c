@@ -39,7 +39,7 @@ static calendar_t PATTERN_INDEX_TO_CALENDAR_FIELD[] = {
     ERA,
     YEAR,
     MONTH,
-    DATE,
+    df_DATE,
     HOUR_OF_DAY,
     HOUR_OF_DAY,
     MINUTE,
@@ -328,7 +328,7 @@ int calendar_get(lua_State *L, tm_t tm, int field, int *v, char *output)
     case MONTH:
         *v = info->tm_mon;
         break;
-    case DATE:
+    case df_DATE:
         *v = info->tm_mday;
         break;
     case HOUR_OF_DAY:
