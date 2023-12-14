@@ -60,7 +60,7 @@ static calendar_t PATTERN_INDEX_TO_CALENDAR_FIELD[] = {
     ZONE_OFFSET,
     MONTH};
 
-EXPORT buffer_t CallingConvention *new_buffer(size_t size)
+buffer_t *new_buffer(size_t size)
 {
     buffer_t *b = (buffer_t *)malloc(sizeof(buffer_t));
 
@@ -71,7 +71,7 @@ EXPORT buffer_t CallingConvention *new_buffer(size_t size)
     return b;
 }
 
-EXPORT void CallingConvention free_buffer(buffer_t *B)
+void free_buffer(buffer_t *B)
 {
     if (B != NULL)
     {
@@ -80,14 +80,14 @@ EXPORT void CallingConvention free_buffer(buffer_t *B)
     }
 }
 
-EXPORT void CallingConvention add_char(buffer_t *B, char_t c)
+void add_char(buffer_t *B, char_t c)
 {
     assert(B->length < B->size);
 
     B->buffer[B->length++] = c;
 }
 
-EXPORT void CallingConvention add_buffer(buffer_t *B, buffer_t *C)
+void add_buffer(buffer_t *B, buffer_t *C)
 {
     int l = C->length;
     char_t *another = C->buffer;
@@ -122,7 +122,7 @@ int encode(int tag, int length, buffer_t *buffer, char *error)
     return 0;
 }
 
-EXPORT int CallingConvention dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
+int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
 {
     int length = strlen(pattern);
 
@@ -923,7 +923,7 @@ int subFormat(lua_State *L, tm_t tm, int patternCharIndex, int count, luaL_Buffe
     return failed;
 }
 
-EXPORT int CallingConvention dtf_format(buffer_t *compiledPattern, time_t timer, const char *locale, int offset, const char *timezone, int local, char *output)
+int dtf_format(buffer_t *compiledPattern, time_t timer, const char *locale, int offset, const char *timezone, int local, char *output)
 {
     int failed = 0;
     char_t *shifted;
