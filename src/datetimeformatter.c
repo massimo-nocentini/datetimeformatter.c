@@ -131,7 +131,7 @@ int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
     buffer_t *compiledCode = new_buffer(length * 2); // new StringBuilder(length * 2);
     buffer_t *tmpBuffer = NULL;
 
-    int count = 0, tagcount = 0;
+    int count = 0;
     int lastTag = -1; //, prevTag = -1;
 
     for (int i = 0; i < length; i++)
@@ -153,7 +153,6 @@ int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
                         if (encode(lastTag, count, compiledCode, error))
                             return 1;
 
-                        tagcount++;
                         // prevTag = lastTag;
                         lastTag = -1;
                         count = 0;
@@ -176,7 +175,6 @@ int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
                     if (encode(lastTag, count, compiledCode, error))
                         return 1;
 
-                    tagcount++;
                     // prevTag = lastTag;
                     lastTag = -1;
                     count = 0;
@@ -230,7 +228,6 @@ int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
                 if (encode(lastTag, count, compiledCode, error))
                     return 1;
 
-                tagcount++;
                 // prevTag = lastTag;
                 lastTag = -1;
                 count = 0;
@@ -282,7 +279,6 @@ int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
         if (encode(lastTag, count, compiledCode, error))
             return 1;
 
-        tagcount++;
         // prevTag = lastTag;
         lastTag = tag;
         count = 1;
@@ -299,11 +295,8 @@ int dtf_compile(const char *pattern, buffer_t **compiledCodeRef, char *error)
         if (encode(lastTag, count, compiledCode, error))
             return 1;
 
-        tagcount++;
         // prevTag = lastTag;
     }
-
-    // bool forceStandaloneForm = (tagcount == 1 && prevTag == PATTERN_MONTH);
 
     free_buffer(tmpBuffer);
 

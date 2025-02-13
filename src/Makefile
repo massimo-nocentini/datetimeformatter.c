@@ -1,9 +1,9 @@
 
 linux:
-	gcc -O3 -g -fPIC -Wall -shared -o libdatetimeformatter.so datetimeformatter.c -llua
+	clang -O3 -g -fPIC -Wall -shared -o libdatetimeformatter.so datetimeformatter.c -llua
 
 macos:
-	gcc -O3 -g -fPIC -Wall -dynamiclib -o libdatetimeformatter.dylib datetimeformatter.c -llua
+	clang -O3 -g -fPIC -Wall -dynamiclib -o libdatetimeformatter.dylib datetimeformatter.c -llua
 
 mingw:
 	gcc -O3 -g -fPIC -Wall -shared -o libdatetimeformatter.dll datetimeformatter.c -I/usr/local/include/ -L/usr/local/lib -llua54
